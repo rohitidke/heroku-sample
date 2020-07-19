@@ -24,6 +24,8 @@ The app allows one to:
     - All permissions a Casting Director has and…
     - Add or delete a movie from the database
 
+* Heroku hosted URL: [Capstone casting agency project !](https://casting-agency-rt.herokuapp.com/)
+
 ## Getting Started
 
 ### Installing Dependencies
@@ -119,6 +121,7 @@ python app.py
 * Capstone Base URL: `http://127.0.0.1:5000/`
 * Heroku hosted URL: `https://casting-agency-rt.herokuapp.com/`
 * Authentication: Authentication or API keys are provided in .env file.
+* Login Url using auth0: `https://dev-matrix.us.auth0.com/authorize?audience=casting&response_type=token&client_id=b5geQU5pOqVgoL15bxz2E8Nl1V6duNFs&redirect_uri=http://127.0.0.1:5000/home`
 
 ### Error Handling
 

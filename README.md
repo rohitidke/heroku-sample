@@ -116,7 +116,8 @@ python app.py
 
 ### Getting Started
 
-* Backend Base URL: `http://127.0.0.1:5000/`
+* Capstone Base URL: `http://127.0.0.1:5000/`
+* Heroku hosted URL: `https://casting-agency-rt.herokuapp.com/`
 * Authentication: Authentication or API keys are provided in .env file.
 
 ### Error Handling

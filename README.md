@@ -1,14 +1,28 @@
 
 # Capstone Project
-This project is a game where users can test their knowledge answering trivia questions. It is a web application that allows people to hold trivia on a regular basis using a webpage to manage the trivia app and play the game.
+The Casting Agency models a company that is responsible for creating movies and managing and assigning actors to those movies. You are an Executive Producer within the company and are creating a system to simplify and streamline your process.
 
 The app allows one to: 
 
-1) Display questions - both all questions and by category. Questions should show the question, category and difficulty rating by default and can show/hide the answer. 
-2) Delete questions.
-3) Add questions and require that they include question and answer text.
-4) Search for questions based on a text query string.
-5) Play the quiz game, randomizing either all questions or within a specific category. 
+1) Display actors and movies.
+2) Add new actors and movies.
+3) Update existing actors details.
+4) Update existing movies details.
+5) Delete specific actor from database.
+6) Delete specific movie from database.
+
+- Roles:
+  - Casting Assistant
+    - Can view actors and movies
+
+  - Casting Director
+    - All permissions a Casting Assistant has and…
+    - Add or delete an actor from the database
+    - Modify actors or movies
+
+  - Executive Producer
+    - All permissions a Casting Director has and…
+    - Add or delete a movie from the database
 
 ## Getting Started
 
@@ -24,7 +38,7 @@ Working within a virtual environment is recommended.
 
 #### PIP Dependencies
 
-navigate to the `/backend` directory and run:
+navigate to the `/capstone` directory and run:
 
 ```bash
 pip install -r requirements.txt
@@ -40,51 +54,62 @@ This will install all of the required packages in the `requirements.txt` file.
 
 - [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/#) is the extension we'll use to handle cross origin requests from our frontend server. 
 
-## Database Setup
-With Postgres running, restore a database using the trivia.psql file provided. From the backend folder in terminal run:
+## Database Setup for postman collection tests execution
+With Postgres running, restore a database using the casting.psql file provided. From the capstone folder in terminal run:
+
 ```bash
-psql trivia < trivia.psql
+dropdb casting
+createdb casting
+psql casting < casting.psql
 ```
+Omit the dropdb command the first time you run.
 
-## Running the server
+## Running the server locally
 
-From within the `backend` directory
+From within the `capstone` directory
 
 To run the server, execute:
 
 ```bash
-export FLASK_APP=flaskr
-export FLASK_ENV=development
-flask run
+python app.py
 ```
 
+Import capstone.postman_collection.json in postman which is provided in capstone folder
+
+In this collection, tokens are already provided in authorization header according to role.
+so permissions are also getting tested for each role.
+
+By clicking on runner in postman, you can execute test cases of given collection which contains all the api.
 
 ## Testing
 To run the tests, run
 ```
-dropdb trivia_test
-createdb trivia_test
-psql trivia_test < trivia.psql
-python test_flaskr.py
+dropdb casting
+createdb casting
+psql casting < casting.psql
+python test_app.py
 ```
 Omit the dropdb command the first time you run tests.
+Second time onwards, run all commands in given sequence.
 
-#### Frontend Dependencies
+## Database Setup for flask migration
 
-This project uses NPM to manage software dependencies. from the `frontend` directory run:
-
+After checking postman collection and doing testing through unittest, run
 ```bash
-npm install
+dropdb casting
+createdb casting
 ```
 
-## Running the Frontend in Dev Mode
-
-The frontend app was built using create-react-app. In order to run the app in development mode use ```npm start```. You can change the script in the ```package.json``` file. 
-
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser. The page will reload if you make edits.<br>
-
+Here, run following commands to replicate sqlalchemy schema models to database.
 ```bash
-npm start
+python manage.py db init
+python manage.py db migrate
+python manage.py db upgrade
+```
+
+After successfully created table in db, run flask server
+```bash
+python app.py
 ```
 
 ## API Reference
@@ -92,8 +117,7 @@ npm start
 ### Getting Started
 
 * Backend Base URL: `http://127.0.0.1:5000/`
-* Frontend Base URL: `http://127.0.0.1:3000/`
-* Authentication: Authentication or API keys are not used in the project yet.
+* Authentication: Authentication or API keys are provided in .env file.
 
 ### Error Handling
 
@@ -103,7 +127,7 @@ Errors are returned in the following json format:
       {
       "success":false,
       "error": 404,
-      "message":"not found the given resource"
+      "message":"Resource not found"
       }
 ```
 
@@ -113,259 +137,226 @@ The error codes currently returned are:
 * 404 – resource not found
 * 422 – unprocessable
 * 500 – internal server error
+* 401 – unauthorized
 
 
 ### Endpoints
 
-#### GET /categories
+#### GET /actors
 
 - General: 
-  - Returns all the categories.
+  - Returns all the actors.
 
-- Sample:  `curl http://127.0.0.1:5000/categories`
-
-```json
-    {
-        "categories": {
-            "1": "Science", 
-            "2": "Art", 
-            "3": "Geography", 
-            "4": "History", 
-            "5": "Entertainment", 
-            "6": "Sports"
-        }, 
-        "success": true
-    }
-```
-
-#### GET /questions
-- General:
-  - Returns all questions
-  - questions are in a paginated.
-  - pages could be requested by a query string
-
-- Sample: `curl http://127.0.0.1:5000/questions`<br>
+- Sample:  `{{host}}/actors`
 
 ```json
 {
-  "categories": {
-    "1": "Science", 
-    "2": "Art", 
-    "3": "Geography", 
-    "4": "History", 
-    "5": "Entertainment", 
-    "6": "Sports"
-  }, 
-  "current_category": 4, 
-  "questions": [
+  "actors": [
     {
-      "answer": "Maya Angelou", 
-      "category": 4, 
-      "difficulty": 2, 
-      "id": 5, 
-      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
-    }, 
+      "age": 36,
+      "gender": "Male",
+      "id": 1,
+      "name": "Caprio"
+    },
     {
-      "answer": "Muhammad Ali", 
-      "category": 4, 
-      "difficulty": 1, 
-      "id": 9, 
-      "question": "What boxer's original name is Cassius Clay?"
-    }, 
+      "age": 45,
+      "gender": "Male",
+      "id": 2,
+      "name": "SK"
+    },
     {
-      "answer": "Apollo 13", 
-      "category": 5, 
-      "difficulty": 4, 
-      "id": 2, 
-      "question": "What movie earned Tom Hanks his third straight Oscar nomination, in 1996?"
-    }, 
+      "age": 29,
+      "gender": "Male",
+      "id": 3,
+      "name": "Shahid"
+    },
     {
-      "answer": "Tom Cruise", 
-      "category": 5, 
-      "difficulty": 4, 
-      "id": 4, 
-      "question": "What actor did author Anne Rice first denounce, then praise in the role of her beloved Lestat?"
-    }, 
+      "age": 24,
+      "gender": "Male",
+      "id": 4,
+      "name": "Rock"
+    },
     {
-      "answer": "Edward Scissorhands", 
-      "category": 5, 
-      "difficulty": 3, 
-      "id": 6, 
-      "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
-    }, 
+      "age": 36,
+      "gender": "Female",
+      "id": 5,
+      "name": "Kareena"
+    },
     {
-      "answer": "Brazil", 
-      "category": 6, 
-      "difficulty": 3, 
-      "id": 10, 
-      "question": "Which is the only team to play in every soccer World Cup tournament?"
-    }, 
-    {
-      "answer": "Uruguay", 
-      "category": 6, 
-      "difficulty": 4, 
-      "id": 11, 
-      "question": "Which country won the first ever soccer World Cup in 1930?"
-    }, 
-    {
-      "answer": "George Washington Carver", 
-      "category": 4, 
-      "difficulty": 2, 
-      "id": 12, 
-      "question": "Who invented Peanut Butter?"
-    }, 
-    {
-      "answer": "Lake Victoria", 
-      "category": 3, 
-      "difficulty": 2, 
-      "id": 13, 
-      "question": "What is the largest lake in Africa?"
-    }, 
-    {
-      "answer": "The Palace of Versailles", 
-      "category": 3, 
-      "difficulty": 3, 
-      "id": 14, 
-      "question": "In which royal palace would you find the Hall of Mirrors?"
+      "age": 26,
+      "gender": "Female",
+      "id": 6,
+      "name": "Alia"
     }
-  ], 
-  "success": true, 
-  "total_questions": 22
-}
-```
-
-#### DELETE /questions/<int:id\>
-
-
-- General:
-  - Deletes a question by id form the url parameter.
-
-- Sample: `curl http://127.0.0.1:5000/questions/6 -X DELETE`
-
-```json
-    {
-		"deleted_question": 6, 
-		"success": true
-	}
-```
-
-#### POST /questions
-
-- General:
-  - Creates a new question based on a payload.
-
-- Sample: `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{
-            "question": "Who is most successful captain in ICC trophies?",
-            "answer": "Dhoni",
-            "difficulty": 3,
-            "category": "6"
-        }'`
-
-```json
-{
-  "inserted_question": "Who is most successful captain in ICC trophies?", 
+  ],
   "success": true
 }
 ```
 
-#### POST /questions
-
+#### GET /movies
 - General:
-  - returns questions that has the search substring
+  - Returns all movies
 
-- Sample: `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{"searchTerm": "world"}'`
+- Sample: `{{host}}/movies`<br>
 
 ```json
 {
-  "current_category": 6, 
-  "questions": [
+  "movies": [
     {
-      "answer": "Brazil", 
-      "category": 6, 
-      "difficulty": 3, 
-      "id": 10, 
-      "question": "Which is the only team to play in every soccer World Cup tournament?"
-    }, 
+      "id": 1,
+      "release_date": "Wed, 30 May 2018 00:00:00 GMT",
+      "title": "KGF"
+    },
     {
-      "answer": "Uruguay", 
-      "category": 6, 
-      "difficulty": 4, 
-      "id": 11, 
-      "question": "Which country won the first ever soccer World Cup in 1930?"
-    }, 
+      "id": 2,
+      "release_date": "Mon, 12 Sep 2016 00:00:00 GMT",
+      "title": "PK"
+    },
     {
-      "answer": "India", 
-      "category": 6, 
-      "difficulty": 3, 
-      "id": 28, 
-      "question": "who won world cup 2011"
+      "id": 3,
+      "release_date": "Sat, 17 Mar 2012 00:00:00 GMT",
+      "title": "Dhoom"
+    },
+    {
+      "id": 4,
+      "release_date": "Fri, 22 Jul 2011 00:00:00 GMT",
+      "title": "Inception"
+    },
+    {
+      "id": 5,
+      "release_date": "Fri, 20 Mar 2015 00:00:00 GMT",
+      "title": "Interstellar"
     }
-  ], 
-  "success": true, 
-  "total_questions": 3
+  ],
+  "success": true
 }
 ```
 
-#### GET /categories/<int:id\>/questions
+
+#### POST /actors
 
 - General:
-  - Gets questions by category using the id from the url parameter.
-- Sample: `curl http://127.0.0.1:5000/categories/1/questions`<br>
+  - Creates a new actor.
 
+- Sample input: `{{host}}/actors`
 ```json
 {
-  "current_category": "Science", 
-  "questions": [
-    {
-      "answer": "The Liver", 
-      "category": 1, 
-      "difficulty": 4, 
-      "id": 20, 
-      "question": "What is the heaviest organ in the human body?"
-    }, 
-    {
-      "answer": "Alexander Fleming", 
-      "category": 1, 
-      "difficulty": 3, 
-      "id": 21, 
-      "question": "Who discovered penicillin?"
-    }, 
-    {
-      "answer": "Blood", 
-      "category": 1, 
-      "difficulty": 4, 
-      "id": 22, 
-      "question": "Hematology is a branch of medicine involving the study of what?"
-    }
-  ], 
-  "success": true, 
-  "total_questions": 3
+    "name": "rohit",
+    "age": 23,
+    "gender": "Male"
+}
+```
+- Output:
+```json
+{
+  "actor": {
+    "age": 23,
+    "gender": "Male",
+    "id": 7,
+    "name": "rohit"
+  },
+  "success": true
 }
 ```
 
-#### POST /quizzes
+#### POST /movies
 
-- General
-  - Takes the category and previous questions in the request.
-  - Return random question not in previous questions.
+- General:
+  - Creates a new movie.
 
-- Sample: `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"previous_questions": [15, 14],"quiz_category": {"id": "3"}}'`
+- Sample input: `{{host}}/movies`
+```json
+{
+    "title": "Dil Bechara",
+    "release_date": "2020-07-22"
+}
+```
+- Output:
+```json
+{
+  "movie": {
+    "id": 6,
+    "release_date": "Wed, 22 Jul 2020 00:00:00 GMT",
+    "title": "Dil Bechara"
+  },
+  "success": true
+}
+```
+
+#### PATCH /actors/<id>
+
+- General:
+  - Update given details of given actor
+
+- Sample Input: `{{host}}/actors/2`
+```json
+{
+    "age": 36
+}
+```
 
 ```json
 {
-  "category": "3", 
-  "question": {
-    "answer": "modi", 
-    "category": 3, 
-    "difficulty": 1, 
-    "id": 31, 
-    "question": "who is prime minister of india"
-  }, 
+  "actor": {
+    "age": 36,
+    "gender": "Male",
+    "id": 2,
+    "name": "SK"
+  },
+  "success": true
+}
+```
+
+#### PATCH /movies/<id>
+
+- General:
+  - Update given details of given movie
+
+- Sample Input: `{{host}}/movies/2`
+```json
+{
+    "title": "Untold story"
+}
+```
+
+```json
+{
+  "movie": {
+    "id": 2,
+    "release_date": "Mon, 12 Sep 2016 00:00:00 GMT",
+    "title": "Untold story"
+  },
+  "success": true
+}
+```
+
+#### DELETE /actors/<id>
+
+- General:
+  - Delete given actor
+
+- Sample: `{{host}}/actors/2`
+
+```json
+{
+  "delete": 2,
+  "success": true
+}
+```
+
+#### DELETE /movies/<id>
+
+- General:
+  - Delete given movie
+
+- Sample: `{{host}}/movies/2`
+
+```json
+{
+  "delete": 2,
   "success": true
 }
 ```
 
 ## Authors
-- Rohit Tidke worked on the API and test suite to integrate with the frontend and this README.
-
-- All other project files, including the models and frontend, were created by [Udacity](https://www.udacity.com/) as a project template for the [Full Stack Web Developer Nanodegree](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd0044).
+- Rohit Tidke created these APIs and test suite to integrate with the frontend and this README.

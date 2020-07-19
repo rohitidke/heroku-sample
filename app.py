@@ -26,7 +26,7 @@ def create_app(test_config=None):
                              'GET, POST, PATCH, DELETE, OPTIONS')
         return response
 
-    @app.route('/hello')
+    @app.route('/')
     def hello():
         '''
         Test Api.
